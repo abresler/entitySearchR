@@ -1,0 +1,23 @@
+lapply(
+  c(
+    'curl',
+    'dplyr',
+    'formattable',
+    'httr',
+    'lubridate',
+    'magrittr',
+    'purrr',
+    'readr',
+    'lazyeval',
+    'rvest',
+    'stringi',
+    'stringr',
+    'tibble',
+    'pdftools',
+    'tidyr',
+    'curlconverter',
+    'xml2'
+  ),
+  library,
+  character.only = TRUE
+)
