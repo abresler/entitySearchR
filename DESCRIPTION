@@ -2,7 +2,7 @@ Package: entitySearchR
 Type: Package
 Title: Tools to explore legal entities
 Description: Tools to explore legal entities
-Version: 0.11
+Version: 0.1101
 Authors@R: person("Alex", "Bresler", email = "abresler@asbcllc.com", role = c("aut", "cre"))
 Maintainer: Alex Bresler <abresler@asbcllc.com>
 URL: https://github.com/abresler/entitySearchR
@@ -22,6 +22,5 @@ Imports:
   stringr,
   stringi,
   lubridate,
-  formattable,
-  trelliscopejs
+  formattable
 RoxygenNote: 6.0.1
