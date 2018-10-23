@@ -4,5 +4,5 @@
 #' @source http://pamiec.pl/pa/form/60,Zaloga-SS-KL-Auschwitz.html
 #' @docType package
 #' @author Alex Bresler (abresler@asbcllc.com)
-#' @import curl tidyr rvest dplyr stringr lubridate xml2 purrr stringi readr formattable trelliscopejs
+#' @import curl tidyr rvest dplyr stringr lubridate xml2 purrr stringi readr formattable trelliscopejs furrr future asbtools
 NULL

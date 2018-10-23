@@ -203,9 +203,10 @@ parse_ca_search_table <-
         df %>%
         mutate(
           nameEntity = entities,
-          idEntity = ifelse(
+          idEntity =
+            ifelse(
             idEntityCA %>% substr(1, 1) == "C",
-            idEntityCA %>% substr(2, nchar(idEntityCA)) %>% str_c("0", idEntity),
+            idEntityCA %>% substr(2, nchar(idEntityCA)) %>% str_c("0", idEntityCA),
             idEntityCA %>% as.character()
           ),
           dateRegistration = dateRegistration %>% lubridate::mdy(),
@@ -217,7 +218,7 @@ parse_ca_search_table <-
   }
 
 
-get_data_entity_california <-
+entity_california <-
   function(search_name = c("Marble Bridge"),
            entity_type = "corporation",
            return_message = TRUE) {
@@ -234,7 +235,7 @@ get_data_entity_california <-
       purrr::possibly(parse_details, data_frame())
     df_details <-
       df_search$idEntity %>%
-      map_df(function(x) {
+      future_map_dfr(function(x) {
         parse_details_safe(entity_id = x)
       }) %>%
       suppressWarnings()
@@ -268,7 +269,7 @@ get_data_entity_california <-
         entity_type
       ) %>%
         purrr::reduce(paste0) %>%
-        message()
+        asbtools::cat_message()
     }
     return(df_search)
   }
@@ -288,11 +289,11 @@ get_data_entity_california <-
 #'
 #' @examples
 #' \dontrun{
-#' get_data_entities_california(parse_bios = TRUE, tidy_columns = TRUE,
+#' california_entities(parse_bios = TRUE, tidy_columns = TRUE,
 #' return_message = TRUE)
 #' }
 
-get_data_entities_california <-
+california_entities <-
   function(search_names = c("Marble Bridge"),
            entity_types = "corporation",
            return_message = TRUE) {
@@ -304,13 +305,13 @@ get_data_entities_california <-
       ) %>%
       dplyr::as_data_frame()
 
-    get_data_entity_california_safe <-
-      purrr::possibly(get_data_entity_california, data_frame())
+    entity_california_safe <-
+      purrr::possibly(entity_california, data_frame())
 
     all_data <-
       1:nrow(df_term_matrix) %>%
-      map_df(function(x) {
-        get_data_entity_california_safe(
+      future_map_dfr(function(x) {
+        entity_california_safe(
           search_name = df_term_matrix$nameSearch[[x]],
           entity_type = df_term_matrix$entityType[[x]],
           return_message = return_message
@@ -433,7 +434,7 @@ parse_lender_table <-
         df %>%
         mutate(idLicense = idLicense %>% as.character()) %>%
         mutate_at(c('countEnforcementActions'),
-                  funs(. %>% readr::parse_number())) %>%
+                  funs(. %>% as.character() %>%  readr::parse_number())) %>%
         mutate_at(c('dateLicenseEffective', 'dateLicenseOriginal'),
                   funs(. %>% lubridate::mdy)) %>%
         mutate_at(c('nameLicensee', 'nameLicenseeDBA'),
@@ -442,7 +443,7 @@ parse_lender_table <-
     }
   }
 
-get_data_california_lender <-
+california_lender <-
   function(search_name = "137", return_message = TRUE) {
     page <-
       generate_curl_text(search_name = search_name) %>%
@@ -458,7 +459,7 @@ get_data_california_lender <-
     if (return_message) {
       list("Found ", nrow(df), " entities with a CA lender's license matching ", search_name) %>%
         purrr::reduce(paste0) %>%
-        message()
+        asbtools::cat_message()
     }
 
     return(df)
@@ -471,17 +472,17 @@ get_data_california_lender <-
 #'
 #' @return
 #' @export
-#' @import purrr dplyr rvest xml2
+#' @import purrr dplyr rvest xml2 furrr future
 #' @examples
-get_data_lenders_california <-
+california_lenders <-
   function(search_names = c("137", "Marble Bridge"), return_message = TRUE) {
-    get_data_california_lender_safe <-
-      purrr::possibly(get_data_california_lender, data_frame())
+    california_lender_safe <-
+      purrr::possibly(california_lender, data_frame())
 
     all_data <-
       search_names %>%
-      map_df(function(x){
-        get_data_california_lender_safe(search_name = x, return_message = return_message)
+      future_map_dfr(function(x){
+        california_lender_safe(search_name = x, return_message = return_message)
       })
 
     return(all_data)
