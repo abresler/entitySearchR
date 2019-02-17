@@ -8,7 +8,7 @@ california_entities(search_names = c("Marble Bridge"),
   entity_types = "corporation", return_message = TRUE)
 }
 \value{
-a \code{data_frame}
+a \code{tibble}
 }
 \description{
 California Entity Search

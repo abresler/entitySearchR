@@ -8,7 +8,7 @@ generate_url <-
       stop("Entity type can only be corporation, llc, or llp")
     }
     df_slugs <-
-      data_frame(
+      tibble(
         typeEntity = c("corporation", 'llc', 'llp'),
         slugEntity = c('CORP', 'LPLLC', 'LPLLC')
       )
@@ -93,10 +93,10 @@ parse_details <- function(entity_id = "02059138") {
       'addressEntityMailing'
     )
 
-  item <- items[1:length(values)]
+  item <- items[seq_along(values)]
 
   df_details <-
-    data_frame(item, value = values) %>%
+    tibble(item, value = values) %>%
     spread(item, value) %>%
     dplyr::select(one_of(item)) %>%
     mutate(idEntity = entity_id) %>%
@@ -104,7 +104,7 @@ parse_details <- function(entity_id = "02059138") {
 
   df_details <-
     df_details %>%
-    mutate_at(df_details %>% dplyr::select(matches("date")) %>% names(),
+    mutate_at(df_details %>% dplyr::select(dplyr::matches("date")) %>% names(),
               funs(. %>% lubridate::mdy()))
   has_si <-
     page %>% html_nodes('td:nth-child(1)') %>% html_text() %>% length() > 0
@@ -131,11 +131,11 @@ parse_details <- function(entity_id = "02059138") {
       str_replace_all('btnView-', '')
 
     df_items <-
-      data_frame(idSI = si_text,
+      tibble(idSI = si_text,
                  dateSI = date_si,
                  idPDF = id_pdf) %>%
       arrange((dateSI)) %>%
-      mutate(idItem = 1:length(si_text) - 1,
+      mutate(idItem = seq_along(si_text) - 1,
              dateSI = dateSI %>% as.character()) %>%
       gather(item, value, -idItem) %>%
       mutate(item = ifelse(idItem == 0, item, paste(item, idItem, sep = ''))) %>%
@@ -151,7 +151,7 @@ parse_details <- function(entity_id = "02059138") {
 
     df_items <-
       df_items %>%
-      mutate_at(df_items %>% dplyr::select(matches("date")) %>% names(),
+      mutate_at(df_items %>% dplyr::select(dplyr::matches("date")) %>% names(),
                 funs(. %>% lubridate::ymd()))
 
     df_details <-
@@ -232,7 +232,7 @@ entity_california <-
       dplyr::select(nameSearch, typeEntitySearch, everything())
 
     parse_details_safe <-
-      purrr::possibly(parse_details, data_frame())
+      purrr::possibly(parse_details, tibble())
     df_details <-
       df_search$idEntity %>%
       future_map_dfr(function(x) {
@@ -283,7 +283,7 @@ entity_california <-
 #' @import httr curl tidyr rvest dplyr stringr lubridate xml2 purrr stringi readr formattable
 #' @references \href{https://businesssearch.sos.ca.gov}{California Department of State}
 #'
-#' @return a \code{data_frame}
+#' @return a \code{tibble}
 
 #' @export
 #'
@@ -303,10 +303,10 @@ california_entities <-
         entityType = entity_types,
         stringsAsFactors = F
       ) %>%
-      dplyr::as_data_frame()
+      dplyr::as_tibble()
 
     entity_california_safe <-
-      purrr::possibly(entity_california, data_frame())
+      purrr::possibly(entity_california, tibble())
 
     all_data <-
       1:nrow(df_term_matrix) %>%
@@ -362,7 +362,7 @@ generate_url_reference <-
       list('http://', domain_slug, tl_domain) %>%
       purrr::reduce(paste0)
     df <-
-      data_frame(urlReferer = url,
+      tibble(urlReferer = url,
                  userAgent = user_agent)
     return(df)
   }
@@ -477,7 +477,7 @@ california_lender <-
 california_lenders <-
   function(search_names = c("137", "Marble Bridge"), return_message = TRUE) {
     california_lender_safe <-
-      purrr::possibly(california_lender, data_frame())
+      purrr::possibly(california_lender, tibble())
 
     all_data <-
       search_names %>%
