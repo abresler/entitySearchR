@@ -421,14 +421,18 @@ parse_lender_table <-
         .[[4]] %>%
         data.frame(stringsAsFactors = FALSE) %>%
         tbl_df() %>%
-        purrr::set_names(c('idLicense',
-                           'statusLicense',
-                           'dateLicenseEffective',
-                           'nameLicensee',
-                           'nameLicenseeDBA',
-                           'dateLicenseOriginal',
-                           'typeLicense',
-                           'countEnforcementActions'))
+        purrr::set_names(
+          c(
+            'idLicense',
+            'statusLicense',
+            'dateLicenseEffective',
+            'nameLicensee',
+            'nameLicenseeDBA',
+            'dateLicenseOriginal',
+            'typeLicense',
+            'countEnforcementActions'
+          )
+        )
 
       df <-
         df %>%
@@ -436,7 +440,7 @@ parse_lender_table <-
         mutate_at(c('countEnforcementActions'),
                   funs(. %>% as.character() %>%  readr::parse_number())) %>%
         mutate_at(c('dateLicenseEffective', 'dateLicenseOriginal'),
-                  funs(. %>% lubridate::mdy)) %>%
+                  funs(. %>% lubridate::mdy())) %>%
         mutate_at(c('nameLicensee', 'nameLicenseeDBA'),
                   funs(. %>% as.character() %>% stringr::str_to_upper() %>% stringr::str_trim()))
       return(df)
