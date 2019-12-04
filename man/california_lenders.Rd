@@ -4,11 +4,16 @@
 \alias{california_lenders}
 \title{California Lenders Licensees}
 \usage{
-california_lenders(search_names = c("137", "Marble Bridge"),
-  return_message = TRUE)
+california_lenders(
+  search_names = c("137", "Marble Bridge"),
+  return_message = TRUE
+)
 }
 \arguments{
 \item{return_message}{}
+}
+\value{
+
 }
 \description{
 California Lenders Licensees

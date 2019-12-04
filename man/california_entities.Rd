@@ -4,8 +4,11 @@
 \alias{california_entities}
 \title{California Entity Search}
 \usage{
-california_entities(search_names = c("Marble Bridge"),
-  entity_types = "corporation", return_message = TRUE)
+california_entities(
+  search_names = c("Marble Bridge"),
+  entity_types = "corporation",
+  return_message = TRUE
+)
 }
 \value{
 a \code{tibble}

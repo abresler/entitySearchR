@@ -3,7 +3,6 @@
 \docType{package}
 \name{entitySearchR}
 \alias{entitySearchR}
-\alias{entitySearchR-package}
 \title{API wrappers for legal entity searches}
 \source{
 http://pamiec.pl/pa/form/60,Zaloga-SS-KL-Auschwitz.html
